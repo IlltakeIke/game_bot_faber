@@ -1,0 +1,1 @@
+MAINMENU, KNB, BNC, CNZ = range(4)
