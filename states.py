@@ -1,1 +1,1 @@
-MAINMENU, KNB, BNC, CNZ = range(4)
+MAINMENU, KNB, BNC, CNZ, RATE = range(5)

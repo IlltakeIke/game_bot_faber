@@ -1,5 +1,5 @@
 import random
-from bd import update_knb
+from bd import update_knb, procent
 from telegram import Update, ReplyKeyboardMarkup
 
 from telegram.ext import (
@@ -9,15 +9,20 @@ from states import KNB
 
 
 async def start_knb(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    #games = procent(update.effective_chat.id)
     keyboard = [["ножницы", "бумага", "камень"]]
     # print(context.user_data['chislo'])
     markup = ReplyKeyboardMarkup(keyboard)
-    
+    # if flag == 1: 
+    #     text = 'Чтобы выбрать другую игру отправьте /start' 
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="Ты попал в игру камень ножницы бумага. \n Выбери кем ты будешь ходить на клавиатуре снизу.",
+        text="Ты попал в игру камень ножницы бумага. \n Выбери кем ты будешь ходить на клавиатуре снизу. ", #+ text
         reply_markup=markup,
     )
+    # if games % 5 == 0: 
+    #     flag = 1
+    #     return KNB, text
     return KNB
 
 async def knb_game(update: Update, context: ContextTypes.DEFAULT_TYPE):

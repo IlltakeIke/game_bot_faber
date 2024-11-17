@@ -10,7 +10,8 @@ from telegram.ext import (
     # filters,
     # ConversationHandler,
 )
-from states import KNB, BNC 
+from states import BNC 
+from start import start 
 
 
 def guess_number() -> list[int]:
@@ -58,7 +59,7 @@ def count_bulls_and_cows(g_sp, u_sp):
 async def start_bnc(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="Ты попал в игру быки и коровы. Попробуй ниже угадать 4-х значное число",
+        text="Ты попал в игру быки и коровы. Попробуй ниже угадать 4-х значное число \n(Быки - угаданная цифра и её место)\n(Корова - угаданная цифра, но не на своем месте) ",
     )
     result = guess_number()
     context.user_data["gsp"] = result
@@ -71,7 +72,7 @@ async def bnc_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
     efforts = 0
     if not result:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="wrong")
-        return KNB
+        return BNC
     c, b = count_bulls_and_cows(context.user_data["gsp"], result)
     await context.bot.send_message(
         chat_id=update.effective_chat.id, text=f"cows = {c} and bulls = {b}"
@@ -83,4 +84,4 @@ async def bnc_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text=f"{update.effective_user.first_name}, you won!",
         )
         update_bnc('win', efforts, update.effective_chat.id)
-        return await start_bnc(update, context)
+        return await start(update, context)

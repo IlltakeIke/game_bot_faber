@@ -106,19 +106,18 @@ async def cnz_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     is_win_or_tie = check_win_cnz(context)
 
-    if is_win_or_tie == 'win':
+    if is_win_or_tie in 'XO':
         await context.bot.send_message(
             chat_id=update.effective_chat.id, text=f"{is_win_or_tie} - победитель"
-        )
+        )   
         update_cnz('win',context.user_data["hod"], update.effective_chat.id)
         return await start(update, context)
-    elif is_win_or_tie == "tie":
+    elif is_win_or_tie is not True and context.user_data["hod"] == 9 :
         await context.bot.send_message(
             chat_id=update.effective_chat.id, text=f"{is_win_or_tie} - ничья"
         )
         update_cnz('win',context.user_data["hod"], update.effective_chat.id)
-        return await start(update, context)
-    return CNZ
+    return await start(update, context)
 
 
 def create_board(context: ContextTypes.DEFAULT_TYPE):
