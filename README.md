@@ -7,6 +7,7 @@
 TOKEN = your_tg token
 ```
 
+2. run this
 
 ```
 git clone https://github.com/IlltakeIke/game_bot_faber.git
