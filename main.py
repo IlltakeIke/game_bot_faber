@@ -1,4 +1,5 @@
 import logging
+import os
 from bd import create_table
 
 from telegram.ext import (
