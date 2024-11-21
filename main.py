@@ -25,6 +25,9 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )  # остается
 
+logging.getLogger("httpx").setLevel(logging.WARNING)
+
+logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     application = ApplicationBuilder().token(os.getenv('TOKEN')).build()
