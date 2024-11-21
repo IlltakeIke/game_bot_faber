@@ -28,6 +28,7 @@ logging.basicConfig(
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
+#Важно
 
 if __name__ == "__main__":
     application = ApplicationBuilder().token(os.getenv('TOKEN')).build()
