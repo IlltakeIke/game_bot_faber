@@ -79,6 +79,7 @@ async def rate_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
         for n, person in enumerate(rate): 
             answer += f'{n+1}. {person[0]} — {person[1]}% \n'
         await query.edit_message_text(answer, reply_markup=markup)
+
     elif query.data == 'bnc_data':
         keyboard = [
         [
@@ -95,11 +96,11 @@ async def rate_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
         rate = get_bnc_rate()
         answer = 'Топ мира по Б-Н-К:\n'
         for n, person in enumerate(rate): 
-            answer += f'{n+1}. {person[0]} — {person[1]} (попыток рекорд) || ({person[2]} игр) \n'
+            answer += f'{n+1}. {person[0]} — {person[1] + 1} (попыток рекорд) || ({person[2]} игр) \n'
             if person[2] >= 3: 
-                answer[:-2] += 'Достижение: Терпеливый'
+                answer = answer[:-2] + '\n Достижение: Терпеливый \n'
             elif person[2] >= 5: 
-               answer[:-2] += 'Достижение: Безумие'
+               answer[:-2] += '\n Достижение: Безумие \n'
         await query.edit_message_text(answer, reply_markup=markup)
 
     elif query.data == 'cnz_data':
@@ -115,10 +116,11 @@ async def rate_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
         ]
         markup = InlineKeyboardMarkup(keyboard)
-        rate = get_cnz_rate()
+        rate_hod = get_cnz_rate()
         answer = 'Топ мира по К-Н-Л:\n'
-        for n, person in enumerate(rate): 
+        for n, person in enumerate(rate_hod): 
             answer += f'{n+1}. {person[0]} — {person[1]} ходов за жизнь. || ({person[2]} - игр) \n'
+
         await query.edit_message_text(answer, reply_markup=markup)
       
     elif query.data == 'own_data':
@@ -133,10 +135,21 @@ async def rate_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
             InlineKeyboardButton('Рейтинг CNZ', callback_data='cnz_data')
         ],
         ]
+        markup = InlineKeyboardMarkup(keyboard)
+        knb_data = procent(update.effective_user.id)
         answer = 'OWN stata'
-        
-    markup = InlineKeyboardMarkup(keyboard)
-    await query.edit_message_text('КНБ', reply_markup=markup)
+        conn = sqlite3.connect("game_bot.db")
+        cur = conn.cursor()
+        cur.execute(f'SELECT cnz_all_hods, cnz_wins, bnc_record, bnc_wins FROM users WHERE id = {update.effective_user.id}')
+        user = cur.fetchone()
+        conn.commit()
+        conn.close()
+        cnz_data = user
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=f"OWN stata: \n КНБ: \n Процент побед : {knb_data[0]} \n Кол-во побед : {knb_data[1]} \n Кол-во ничей : {knb_data[2]} \n Кол-во поражений : {knb_data[3]} \n \n БНК:\n Рекорд: {cnz_data[2]}\n Всего игр: {cnz_data[3]} \n \n КНЗ: \n Всего ходов: {cnz_data[0]} \n Всего игр: {cnz_data[1]}.",
+            reply_markup=markup
+        )
 
-    return RATE
+        return RATE
     

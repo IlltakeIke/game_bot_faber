@@ -45,7 +45,9 @@ def procent(user_id):
     cur.execute(f'SELECT knb_wins, knb_ties, knb_ties FROM users WHERE id = {user_id}')
     user = cur.fetchone() #в юзере картеж(0,)
     all_games = user[0] + user[1] + user[2]
-    wprocent = user[0] / all_games * 100  
+    wprocent = 0
+    if user[0] > 0:
+        wprocent = user[0] / all_games * 100  
     conn.commit()
     conn.close()
     return [wprocent, user[0], user[1], user[2]]
@@ -70,13 +72,11 @@ def get_bnc_rate():
     cur.execute('SELECT name, bnc_wins, bnc_record FROM users')
     users = cur.fetchall()
     bnc_top = []
-    bnc_plays = []
     for user in users:
-        bnc_top.append([user[0], user[2]])
-        bnc_plays.append([user[0], user[1]])
-    bnc_top(key=lambda x: x[1], reverse=True)
-    bnc_plays(key=lambda x: x[1], reverse=True)        
-    return bnc_top[:10], bnc_plays[:10]
+        bnc_top.append([user[0], user[2], user[1]])
+    bnc_top.sort(key=lambda x: x[1], reverse=True)
+    
+    return bnc_top[:10]
 
 def get_cnz_rate():
     conn = sqlite3.connect("game_bot.db")
@@ -84,13 +84,13 @@ def get_cnz_rate():
     cur.execute('SELECT name, cnz_all_hods, cnz_wins, cnz_ties FROM users')
     users = cur.fetchall()
     hod_top = []
-    all_games = []
+
     for user in users:
-        hod_top.append([user[0], user[1]])
-        all_games.append([user[2] + user[3]])
+        hod_top.append([user[0], user[1], user[2] + user[3]])
+        
     hod_top.sort(key=lambda x: x[1], reverse=True)
-    all_games.sort(key=lambda x: x[0], reverse=True)
-    return hod_top[:10], all_games[:10]
+    
+    return hod_top[:10]
 
 def update_bnc(result, efforts, user_id):
     conn = sqlite3.connect("game_bot.db")
